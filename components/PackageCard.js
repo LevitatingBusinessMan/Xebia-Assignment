@@ -13,7 +13,7 @@ const PackageCard = ({pkg}) => (
                 color: #0099ff;
             }
             .card {
-                width: 15%;
+                width: 254px;
                 padding: 20px;
                 margin: 10px;
                 border-radius: 15px;

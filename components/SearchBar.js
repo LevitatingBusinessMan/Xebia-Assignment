@@ -7,7 +7,7 @@ class SearchBar extends React.Component {
 
     handleKeyPress(e) {
         if (e.key === "Enter" && e.target) {
-            Router.push("/search?q="+e.target.value)
+            window.location.href = "/search?q="+e.target.value
         }
     }
 

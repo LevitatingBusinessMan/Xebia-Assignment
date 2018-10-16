@@ -1,27 +1,50 @@
 import fetch from "isomorphic-fetch"
 import PackageCard from "../components/PackageCard"
 import SearchBar from "../components/SearchBar"
-import Link from 'next/link'
 
 const Index = props => (
     <div>
-        {
-            props.search ?
-            <div><Link href="/"><a>home</a></Link><p>Monthly download increasement of searched packages:</p></div> :
-            <p>Monthly download increasement of most popular NPM packages:</p>
-        }
+        <h1 className="title">Monthly download increasement of most popular NPM packages:</h1>
         <SearchBar />
-        {
-            props.packages.length ? 
-                props.packages.sort((a,b) => b.increase - a.increase).map(pkg => (
+        <div className="top5-container">
+            <h1>Top 6</h1>
+            <div className="card-container">{
+                props.packages.sort((a,b) => b.increase - a.increase).slice(0,6).map(pkg => (
                     <PackageCard pkg={pkg} key={props.packages.indexOf(pkg)}/>
                 ))
-            :
-                <p>no search results :v</p>
+            }</div>
+        </div>
+        <h1 className="more">More</h1>
+        {
+            props.packages.sort((a,b) => b.increase - a.increase).slice(5).map(pkg => (
+                <PackageCard pkg={pkg} key={props.packages.indexOf(pkg)}/>
+            ))
         }
         <style jsx global>{`
             * {
                 font-family: Roboto;
+            }
+            .top5-container {
+                background-color: #99ccff;
+                padding: 5px 30px;
+                margin: 20px;
+                border-radius: 10px;
+            }
+            .top5-container .card-container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .top5-container h1 {
+                text-align: center;
+                width: 100%;
+                display: block;
+            }
+            .title {
+                line-height: 10px;
+            }
+            .more {
+                margin-left: 10px;
             }
         `}</style>
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"/>
@@ -33,7 +56,7 @@ Index.getInitialProps = async ctx => {
     if (ctx.req) var host = ctx.req.headers.host
     else var host = window.location.host
 
-    const list = ctx.query.list ? ctx.query.list : await (await fetch(`http://${host}/api/getMostUsed`)).json()
+    const list = await (await fetch(`http://${host}/api/getMostUsed`)).json()
 
     let prevMonth = formatDate(new Date(new Date().getTime() - 1000*60*60*24*30))
     let prevMonth2 = formatDate(new Date(new Date().getTime() - 2*1000*60*60*24*30))
@@ -56,7 +79,7 @@ Index.getInitialProps = async ctx => {
         return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
     }
 
-    return {packages, search: ctx.query.search ? true : false}
+    return {packages}
 
 }
 

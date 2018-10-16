@@ -19,13 +19,6 @@ app.prepare()
         res.send(elements.map((i, x) => $(x).text()).get())
     })
 
-    server.get('/search', async (req,res) => {
-        const {q} = req.query
-        const response = await (await fetch("https://www.npmjs.com/search/suggestions?q="+q)).json()
-        const list = response.map(x => x.name)
-        app.render(req, res, "/", { list, search: true })
-    })
-
     server.get('*', (req, res) => {
         return handle(req, res)
     })
